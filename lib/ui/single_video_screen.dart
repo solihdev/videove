@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-class VideoPlayerScreen extends StatefulWidget {
-  const VideoPlayerScreen({Key? key}) : super(key: key);
+class SingleVideoScreen extends StatefulWidget {
+   SingleVideoScreen({Key? key,required this.videoUrl}) : super(key: key);
+
+  String videoUrl;
 
   @override
-  State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
+  State<SingleVideoScreen> createState() => _SingleVideoScreenState();
 }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+class _SingleVideoScreenState extends State<SingleVideoScreen> {
   late VideoPlayerController _controller;
   double currentDuration = 0;
 
@@ -16,8 +18,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   void initState() {
     super.initState();
 
-    _controller = VideoPlayerController.network(
-        "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4")
+    _controller = VideoPlayerController.network(widget.videoUrl)
       ..initialize().then((_) {
         setState(() {});
       });
@@ -38,6 +39,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         title: const Text("Video Screen"),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
             child: _controller.value.isInitialized
@@ -67,13 +69,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
               setState(() {});
             },
           ),
-          TextButton(
-            onPressed: () {
-              currentDuration += 1000;
-              _controller
-                  .seekTo(Duration(milliseconds: currentDuration.toInt()));
-            },
-            child: const Text("+1 sekond"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(onPressed:(){
+                currentDuration -= 1000;
+                _controller
+                    .seekTo(Duration(milliseconds: currentDuration.toInt()));
+              },icon:const Icon(Icons.exposure_minus_1_sharp)),
+              IconButton(onPressed:(){
+                currentDuration += 1000;
+                _controller
+                    .seekTo(Duration(milliseconds: currentDuration.toInt()));
+              },icon:const Icon(Icons.add)),
+            ],
           )
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:videove/ui/video_screen.dart';
+import 'package:videove/ui/single_video_screen.dart';
+import 'package:videove/ui/videos_list_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Video Player',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const VideoPlayerScreen(),
+      home: const VideosListScreen(),
     );
   }
 }
