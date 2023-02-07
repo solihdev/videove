@@ -10,6 +10,7 @@ class VideoPlayerScreen extends StatefulWidget {
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   late VideoPlayerController _controller;
+  double currentDuration = 0;
 
   @override
   void initState() {
@@ -20,6 +21,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       ..initialize().then((_) {
         setState(() {});
       });
+    _controllerObserver();
+  }
+
+  _controllerObserver() {
+    _controller.addListener(() {
+      currentDuration = _controller.value.position.inMilliseconds.toDouble();
+      setState(() {});
+    });
   }
 
   @override
@@ -28,25 +37,45 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       appBar: AppBar(
         title: const Text("Video Screen"),
       ),
-      body: Center(
-        child: _controller.value.isInitialized
-            ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              )
-            : Container(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _controller.value.isPlaying
-                ? _controller.pause()
-                : _controller.play();
-          });
-        },
-        child: Icon(
-          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
+      body: Column(
+        children: [
+          Center(
+            child: _controller.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  )
+                : Container(),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                _controller.value.isPlaying
+                    ? _controller.pause()
+                    : _controller.play();
+              });
+            },
+            child: Icon(
+              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+            ),
+          ),
+          Slider(
+            max: _controller.value.duration.inMilliseconds.toDouble(),
+            value: currentDuration,
+            onChanged: (v) {
+              _controller.seekTo(Duration(milliseconds: v.toInt()));
+              setState(() {});
+            },
+          ),
+          TextButton(
+            onPressed: () {
+              currentDuration += 1000;
+              _controller
+                  .seekTo(Duration(milliseconds: currentDuration.toInt()));
+            },
+            child: const Text("+1 sekond"),
+          )
+        ],
       ),
     );
   }

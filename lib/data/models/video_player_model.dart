@@ -1,11 +1,11 @@
 class VideoPlayerModel {
   String videoName;
   String videoUrl;
-  String thumbImgae;
+  String thumbImages;
 
   VideoPlayerModel({
     required this.videoName,
     required this.videoUrl,
-    required this.thumbImgae,
+    required this.thumbImages,
   });
 }
